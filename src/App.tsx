@@ -1,25 +1,31 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
+import StoreItem from './StoreItem';
+import Grid from '@mui/material/Unstable_Grid2';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Grid container spacing={2}>
+      <Grid xs={6}>
+        <StoreItem 
+          name='Drake Milligan - EP' 
+          artist='Drake Milligan' 
+          category='Country' 
+          imageUrl='https://is4-ssl.mzstatic.com/image/thumb/Music115/v4/33/70/b9/3370b93a-f5aa-83b3-cf7d-ae85c34b1d55/4050538682670.jpg/170x170bb.png' 
+          price={6.45} 
+        />
+      </Grid>
+      <Grid xs={6}>
+        <StoreItem 
+          name='Purple Hearts (Original Soundtrack)' 
+          artist='Sofia Carson' 
+          category='Soundtrack' 
+          imageUrl='https://is3-ssl.mzstatic.com/image/thumb/Music112/v4/80/da/d9/80dad9a0-a6be-6f18-4a9d-ac7210c021b5/22UMGIM75208.rgb.jpg/170x170bb.png' 
+          price={7.99} 
+        />
+      </Grid>
+    </Grid>
   );
 }
 
