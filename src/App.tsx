@@ -4,6 +4,8 @@ import { buildStoreItemData, StoreItemData, TOP_ALBUMS_URL } from './StoreItemDa
 import useAxios from "axios-hooks";
 import StoreItemGallery from './StoreItemGallery';
 import invariant from 'invariant';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
 
 export default function App() {
   const [{data: apiData, loading, error}] = useAxios(TOP_ALBUMS_URL);
@@ -23,7 +25,10 @@ export default function App() {
 
   invariant(items !== undefined, "");
   return (
-    <StoreItemGallery items={items} />
+    <Box sx={{padding: 4}}>
+      <Typography variant="h3" gutterBottom>Top 100 albums</Typography>
+      <StoreItemGallery items={items} />
+    </Box>
   );
 }
 

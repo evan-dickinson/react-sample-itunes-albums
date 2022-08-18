@@ -1,6 +1,3 @@
-import { AxiosError } from "axios";
-import invariant from "invariant";
-import _ from "lodash";
 
 // Data model for one item in the store. 
 export interface StoreItemData {

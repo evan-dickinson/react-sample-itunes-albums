@@ -1,4 +1,4 @@
-import StoreItem, { Props as StoreItemProps } from "./StoreItem";
+import StoreItem from "./StoreItem";
 import Grid from '@mui/material/Unstable_Grid2';
 import { StoreItemData } from "./StoreItemData";
 
