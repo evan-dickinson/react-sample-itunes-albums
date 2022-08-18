@@ -1,31 +1,57 @@
 import React from 'react';
 import './App.css';
-import { StoreItemData } from './StoreItemData';
+import { buildStoreItemData, StoreItemData, TOP_ALBUMS_URL } from './StoreItemData';
+import useAxios from "axios-hooks";
 import StoreItemGallery from './StoreItemGallery';
+import invariant from 'invariant';
 
-const fakeData: StoreItemData[] = [
-  {
-    name: 'Drake Milligan - EP',
-    artist:'Drake Milligan',
-    category:'Country',
-    imageUrl:'https://is4-ssl.mzstatic.com/image/thumb/Music115/v4/33/70/b9/3370b93a-f5aa-83b3-cf7d-ae85c34b1d55/4050538682670.jpg/170x170bb.png' ,
-    price: 6.45,
-    id: "1",
-  },
-  {
-    name:'Purple Hearts (Original Soundtrack)' ,
-    artist:'Sofia Carson' ,
-    category:'Soundtrack' ,
-    imageUrl:'https://is3-ssl.mzstatic.com/image/thumb/Music112/v4/80/da/d9/80dad9a0-a6be-6f18-4a9d-ac7210c021b5/22UMGIM75208.rgb.jpg/170x170bb.png' ,
-    price: 7.99,
-    id: "2",
+export default function App() {
+  const [{data: apiData, loading, error}] = useAxios(TOP_ALBUMS_URL);
+
+  const items: StoreItemData[] | undefined = React.useMemo(
+    () => apiData ? buildStoreItemData(apiData) : undefined,
+  [apiData]);
+
+  if (loading) {
+    return <>Loading</>;
   }
-]
 
-function App() {
+  if (error) {
+    // XXX Describe the error condition
+    return <>Error</>;
+  }
+
+  invariant(items !== undefined, "");
   return (
-    <StoreItemGallery items={fakeData} />
+    <StoreItemGallery items={items} />
   );
 }
 
-export default App;
+/*
+Test cases
+
+It renders loading, when no data is available
+=============================================
+* Using Axios, mock GET TOP_ALBUMS_URL to not return data
+* Mount the `App` component
+* Ensure that it is rendering "Loading"
+
+It renders an error message
+===========================
+* Using Axios, mock GET TOP_ALBUMS_URL to return an error condition
+* Mount the `App` component
+* Ensure that it is rendering "Error"
+
+It renders albums
+=================
+* Using Axios, mock GET TOP_ALBUMS_URL to return the mock data found
+  in StoreItemData.mock.json
+* Mount the `App` component
+* Find all the StoreItem components
+* expect the count from StoreItemData.mock.json to equal the count of StoreItem components
+* for i in 0 to numItems:
+  - Expect the ith StoreItem's name to equal the ith name from the mock JSON,
+    verifying that the items are sorted by popularity.
+
+*/
+
