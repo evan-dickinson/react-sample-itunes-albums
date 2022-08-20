@@ -8,35 +8,41 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
 
+function useFilteredItems(items: StoreItemData[] | undefined, searchTerm: string): StoreItemData[] | undefined {
+  return React.useMemo(() => {
+    if (!items) {
+      return undefined;
+    }
+    if (!searchTerm) {
+      return items;
+    }
+
+    const searchFields: Array<keyof StoreItemData> = [
+      'artist', 'category', 'name'
+    ]
+    return items.filter(item => {
+      const valuesToSearch = searchFields.map(fieldName => {
+        const value = item[fieldName];
+        invariant(typeof value === 'string', 'Can only search on string fields');
+        return value.toLowerCase().normalize();
+      });
+      return valuesToSearch.some(value => value.includes(searchTerm))
+    });
+  }, [items, searchTerm]);
+}
+
 export default function App() {
   const [searchTerm, setSearchTerm] = React.useState("");
   const [{data: apiData, loading, error}] = useAxios(TOP_ALBUMS_URL);
 
-  const [items, countUnfiltered]: [StoreItemData[] | undefined, number] = React.useMemo(
-    () => {
-      if (!apiData) {
-        return [undefined, 0];
-      }
-
-      let items = buildStoreItemData(apiData);
-      const countUnfiltered = items.length;
-      if (searchTerm) {
-        const searchFields: Array<keyof StoreItemData> = [
-          'artist', 'category', 'name'
-        ]
-        items = items.filter(item => {
-          const valuesToSearch = searchFields.map(fieldName => {
-            const value = item[fieldName]
-            invariant(typeof value === 'string', 'Can only search on string fields');
-            return value.toLowerCase().normalize();
-          });
-          return valuesToSearch.some(value => value.includes(searchTerm))
-        })
-      }
-
-      return [items, countUnfiltered];
-    },
-  [apiData, searchTerm]);
+  const allItems = React.useMemo(() => {
+    if (!apiData) {
+      return undefined;
+    } else {
+      return buildStoreItemData(apiData);
+    }
+  }, [apiData]);
+  const filteredItems = useFilteredItems(allItems, searchTerm);
 
   if (loading) {
     return <>Loading</>;
@@ -47,16 +53,16 @@ export default function App() {
     return <>Error</>;
   }
 
-  invariant(items !== undefined, "If `loading` and `error` are falsy, then `items` must be defined");
+  invariant(allItems !== undefined && filteredItems !== undefined, "If `loading` and `error` are falsy, then `allItems` and `filteredItems` must be defined");
   return (
     <Box sx={{padding: 4}}>
-      <Typography variant="h3" gutterBottom>Top {countUnfiltered} albums</Typography>
+      <Typography variant="h3" gutterBottom>Top {allItems.length} albums</Typography>
       <TextField 
         label="Search" 
         variant="outlined"
         onChange={(event) => setSearchTerm(event.target.value.toLowerCase().normalize())}
       />
-      <StoreItemGallery items={items} />
+      <StoreItemGallery items={filteredItems} />
     </Box>
   );
 }
