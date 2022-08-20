@@ -12,14 +12,14 @@ export default function App() {
   const [searchTerm, setSearchTerm] = React.useState("");
   const [{data: apiData, loading, error}] = useAxios(TOP_ALBUMS_URL);
 
-  const items: StoreItemData[] | undefined = React.useMemo(
-    // () => apiData ? buildStoreItemData(apiData) : undefined,
+  const [items, countUnfiltered]: [StoreItemData[] | undefined, number] = React.useMemo(
     () => {
       if (!apiData) {
-        return undefined;
+        return [undefined, 0];
       }
 
       let items = buildStoreItemData(apiData);
+      const countUnfiltered = items.length;
       if (searchTerm) {
         const searchFields: Array<keyof StoreItemData> = [
           'artist', 'category', 'name'
@@ -34,7 +34,7 @@ export default function App() {
         })
       }
 
-      return items;
+      return [items, countUnfiltered];
     },
   [apiData, searchTerm]);
 
@@ -47,10 +47,10 @@ export default function App() {
     return <>Error</>;
   }
 
-  invariant(items !== undefined, "");
+  invariant(items !== undefined, "If `loading` and `error` are falsy, then `items` must be defined");
   return (
     <Box sx={{padding: 4}}>
-      <Typography variant="h3" gutterBottom>Top 100 albums</Typography>
+      <Typography variant="h3" gutterBottom>Top {countUnfiltered} albums</Typography>
       <TextField 
         label="Search" 
         variant="outlined"
@@ -87,6 +87,23 @@ It renders albums
   - Expect the ith StoreItem's name to equal the ith name from the mock JSON,
     verifying that the items are sorted by popularity.
 
+It renders album count
+======================
+* For numItemsToRemove of [0, 1]:
+  - Load the data from StoreItemData.mock.json, and remove the first numItemsToRemove items
+  - Mock GET TOP_ALBUMS_URL using that data
+  - Mount the `App` component
+  - Expect there to be a Typography element with the text `Top ${count} albumns`
+
+It doesn't change album count during search
+===========================================  
+* Using Axios, mock GET TOP_ALBUMS_URL to return the mock data found
+  in StoreItemData.mock.json
+* Mount the `App` component
+* const originalCount = text of element matching /Top \d+ albums/
+* Type "now" into the search box
+* const updatedCount = text of element matching /Top \d+ albums/
+* expect originalCount to equal updatedCount
 
 It searches by name
 ====================
