@@ -9,8 +9,11 @@ export interface StoreItemData {
     price: number;
 
     id: string;
+    // Rank in the top albums
+    rank: number;
 }
 
+// NB - The API can and will return fewer than 100 items
 export const TOP_ALBUMS_URL = 'https://itunes.apple.com/us/rss/topalbums/limit=100/json';
 
 // NOTE - I'm not thrilled about the use of `any` as the paramter type,
@@ -18,7 +21,7 @@ export const TOP_ALBUMS_URL = 'https://itunes.apple.com/us/rss/topalbums/limit=1
 // robust app, I'd dive more into the schema to better understand what
 // might fail. I'd also look into generating TypeScript definitions from
 // the API schema.
-function buildOneStoreItemData(apiEntry: any): StoreItemData {
+function buildOneStoreItemData(apiEntry: any, index: number): StoreItemData {
     return {
         name: apiEntry["im:name"].label,
         artist: apiEntry["im:artist"].label,
@@ -29,9 +32,10 @@ function buildOneStoreItemData(apiEntry: any): StoreItemData {
             [0],
         price: +apiEntry["im:price"].attributes.amount,
         id: apiEntry.id.attributes["im:id"],
+        rank: index,
     }
 }
 
 export function buildStoreItemData(apiResponse: any): StoreItemData[] {
-    return apiResponse.feed.entry.map((entry: any) => buildOneStoreItemData(entry))
+    return apiResponse.feed.entry.map((entry: any, index: number) => buildOneStoreItemData(entry, index))
 }
