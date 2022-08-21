@@ -19,6 +19,8 @@ import lodash from "lodash";
 enum SortScheme {
   RankAscending,
   RankDescending,
+  PriceAscending,
+  PriceDescending,
 }
 
 function useFilteredItems(
@@ -61,15 +63,22 @@ function useSortedItems(items: StoreItemData[] | undefined, sortScheme: SortSche
       case SortScheme.RankDescending:
         sortKey = 'rank';
         break;
+      case SortScheme.PriceAscending:
+      case SortScheme.PriceDescending:
+        sortKey = 'price';
+        break;
     }
 
     let isDescending: boolean;
     switch (sortScheme) {
       case SortScheme.RankAscending:
+      case SortScheme.PriceAscending:
         isDescending = false;
         break;
       case SortScheme.RankDescending:
+      case SortScheme.PriceDescending:
         isDescending = true;
+        break;
     }
 
     const sortedItems = lodash.sortBy(items, [sortKey]);
@@ -130,8 +139,11 @@ export default function App() {
           setSortScheme(newScheme);
         }}
       >
+        {/* NB - popularity sort is reversed: high popularity corresponds with a low number */}
         <MenuItem value={SortScheme.RankAscending}>Popularity, high to low</MenuItem>
         <MenuItem value={SortScheme.RankDescending}>Popularity, low to high</MenuItem>
+        <MenuItem value={SortScheme.PriceAscending}>Price, low to high</MenuItem>
+        <MenuItem value={SortScheme.PriceDescending}>Price, high to low</MenuItem>
       </Select>
     </FormControl>
 
@@ -226,6 +238,21 @@ It sorts by popularity
 * Expect first album displayed to be the first album in the JSON
 * Expect last album displayed to be the last album in the JSON
 
+It sorts by price
+=================
+* Using Axios, mock GET TOP_ALBUMS_URL to return the mock data found
+  in StoreItemData.mock.json
+* Mount the `App` component
+* Find the "sort by" dropdown and change it to "Price, low to high"
+* With the first album:
+  - Find the button
+  - Expect its text to be "Buy for $5.99"
+* With the last album:
+  - Find the button
+  - Expect its text to be "Buy for $11.99"
+* Find the "sort by" dropdown and change it to "Price, high to low"
+* Check the first and last albums again
+
 It searches and filters
 =======================
 * * Using Axios, mock GET TOP_ALBUMS_URL to return the mock data found
@@ -247,6 +274,11 @@ The idea here is to create a minimal component that uses the useSortedItems hook
 and makes it easier to verify the hook's output. Using the hook inside a component
 gives a more realistic example of its use, as compared to doing all the shenannigans
 required to call the hook directly in a unit test.
+
+I didn't feel that this pattern was necessary for the useFilteredItems hook, because
+when testing that hook you want to look at the album title, etc., and that's easy
+enough to do with the main App component. But with filter, we're looking at props
+that are harder to extract from App, so the scaffolding is worth it.
 
 interface Props {
   items: items: StoreItemData[] | undefined;
@@ -285,5 +317,10 @@ It sorts by rank ascending
 It sorts by rank descending
 ===========================
 Follow the pattern in "rank ascending"
+
+It sorts by price {ascending, descending}
+=========================================
+Follow the pattern for rank. Except that multiple items can have the same price,
+so when comparing currPrice and prevPrice use <= instead of <.
 
 */
