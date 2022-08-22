@@ -12,6 +12,7 @@ import InputLabel from '@mui/material/InputLabel';
 import Select from '@mui/material/Select';
 import { MenuItem } from '@mui/material';
 import lodash from "lodash";
+import ControlStrip from './ControlStrip';
 
 // We have to flatten the key and direction into one enum, because the
 // MenuItem component needs its value to be a primitive type. MenuItem
@@ -118,34 +119,37 @@ export default function App() {
   invariant(allItems !== undefined && filteredSortedItems !== undefined, "If `loading` and `error` are falsy, then `allItems` and `filteredSortedItems` must be defined");
   return (
     <Box sx={{padding: 4}}>
-      <Typography variant="h3" gutterBottom>Top {allItems.length} albums</Typography>
-      <TextField 
-        label="Search" 
-        variant="outlined"
-        onChange={(event) => setSearchTerm(event.target.value.toLowerCase().normalize())}
-      />
+      <Typography variant="h3">Top {allItems.length} albums</Typography>
+      <ControlStrip>
+        <TextField 
+          label="Search" 
+          variant="outlined"
+          onChange={(event) => setSearchTerm(event.target.value.toLowerCase().normalize())}
+          // sx={{paddingRight: 2}}
+        />
 
-    <FormControl>
-      <InputLabel id="select-sort-by-label">Sort by</InputLabel>
-      <Select
-        labelId="select-sort-by-label"
-        id="select-sort-by"
-        value={sortScheme}
-        label="Sort by"
-        onChange={event => {
-          const newScheme = event.target.value;
-          // TS thinks that newScheme has type SortScheme | string
-          invariant(typeof newScheme !== 'string', "newScheme must be a SortScheme");
-          setSortScheme(newScheme);
-        }}
-      >
-        {/* NB - popularity sort is reversed: high popularity corresponds with a low number */}
-        <MenuItem value={SortScheme.RankAscending}>Popularity, high to low</MenuItem>
-        <MenuItem value={SortScheme.RankDescending}>Popularity, low to high</MenuItem>
-        <MenuItem value={SortScheme.PriceAscending}>Price, low to high</MenuItem>
-        <MenuItem value={SortScheme.PriceDescending}>Price, high to low</MenuItem>
-      </Select>
-    </FormControl>
+        <FormControl>
+          <InputLabel id="select-sort-by-label">Sort by</InputLabel>
+          <Select
+            labelId="select-sort-by-label"
+            id="select-sort-by"
+            value={sortScheme}
+            label="Sort by"
+            onChange={event => {
+              const newScheme = event.target.value;
+              // TS thinks that newScheme has type SortScheme | string
+              invariant(typeof newScheme !== 'string', "newScheme must be a SortScheme");
+              setSortScheme(newScheme);
+            }}
+          >
+            {/* NB - popularity sort is reversed: high popularity corresponds with a low number */}
+            <MenuItem value={SortScheme.RankAscending}>Popularity, high to low</MenuItem>
+            <MenuItem value={SortScheme.RankDescending}>Popularity, low to high</MenuItem>
+            <MenuItem value={SortScheme.PriceAscending}>Price, low to high</MenuItem>
+            <MenuItem value={SortScheme.PriceDescending}>Price, high to low</MenuItem>
+          </Select>
+        </FormControl>
+      </ControlStrip>
 
       <StoreItemGallery items={filteredSortedItems} />
     </Box>
