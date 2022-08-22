@@ -10,7 +10,7 @@ export default function StoreItemGallery({items}: Props): JSX.Element {
     return (
         <Grid container spacing={2}>
             {items.map(item => 
-            <Grid xs={6} key={item.id}>
+            <Grid xs={12} md={6} xl={4} key={item.id}>
                 <StoreItem
                     item={item}
                 />
