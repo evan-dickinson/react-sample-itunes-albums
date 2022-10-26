@@ -24,6 +24,7 @@ enum SortScheme {
   PriceDescending,
 }
 
+// Filter the items, according to searchTerm
 function useFilteredItems(
   items: StoreItemData[] | undefined, 
   searchTerm: string,
@@ -52,6 +53,7 @@ function useFilteredItems(
   }, [items, searchTerm]);
 }
 
+// Sort the items, according to the specified scheme
 function useSortedItems(items: StoreItemData[] | undefined, sortScheme: SortScheme): StoreItemData[] | undefined {
   return React.useMemo(() => {
     if (!items) {
@@ -125,7 +127,6 @@ export default function App() {
           label="Search" 
           variant="outlined"
           onChange={(event) => setSearchTerm(event.target.value.toLowerCase().normalize())}
-          // sx={{paddingRight: 2}}
         />
 
         <FormControl>
