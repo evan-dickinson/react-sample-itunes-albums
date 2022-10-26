@@ -32,6 +32,7 @@ And some important topics seemed outside the scope of this demo app:
 - State management (e.g., Redux). For this simple project, using hooks and props for
   state is just fine. There wasn't enough complexity to inform a decision about which
   state management solution to use.
+- Routing  
 - Screenshot testing
 - Unicode and handling non-English text
 - Customizing the ESLint configuration

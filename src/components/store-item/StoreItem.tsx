@@ -12,6 +12,7 @@ export interface Props {
     item: StoreItemData;
 }
 
+// An individual item (i.e. album) in the store
 export default function StoreItem({item: { name, artist, category, imageUrl, price }}: Props): JSX.Element {
     return (
     <Card sx={{display: "flex", justifyContent: "space-between"}}>

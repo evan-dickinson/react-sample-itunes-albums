@@ -1,8 +1,8 @@
 import React from 'react';
 
-import { buildStoreItemData, StoreItemData, TOP_ALBUMS_URL } from './StoreItemData';
+import { buildStoreItemData, StoreItemData, TOP_ALBUMS_URL } from '../../components/store-item/StoreItemData';
 import useAxios from "axios-hooks";
-import StoreItemGallery from './StoreItemGallery';
+import StoreItemGallery from '../../components/store-item-gallery/StoreItemGallery';
 import invariant from 'invariant';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
@@ -12,7 +12,7 @@ import InputLabel from '@mui/material/InputLabel';
 import Select from '@mui/material/Select';
 import { MenuItem } from '@mui/material';
 import lodash from "lodash";
-import ControlStrip from './ControlStrip';
+import ControlStrip from '../../components/control-strip/ControlStrip';
 
 // We have to flatten the key and direction into one enum, because the
 // MenuItem component needs its value to be a primitive type. MenuItem

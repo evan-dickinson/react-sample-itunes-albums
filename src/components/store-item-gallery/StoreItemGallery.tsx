@@ -1,11 +1,12 @@
-import StoreItem from "./StoreItem";
 import Grid from '@mui/material/Unstable_Grid2';
-import { StoreItemData } from "./StoreItemData";
+import StoreItem from "../store-item/StoreItem";
+import { StoreItemData } from "../store-item/StoreItemData";
 
 interface Props {
     items: StoreItemData[];
 }
 
+// A responsive grid of items to display in a store
 export default function StoreItemGallery({items}: Props): JSX.Element {
     return (
         <Grid container spacing={2}>
