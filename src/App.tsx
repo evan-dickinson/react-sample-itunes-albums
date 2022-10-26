@@ -1,5 +1,5 @@
 import React from 'react';
-import './App.css';
+
 import { buildStoreItemData, StoreItemData, TOP_ALBUMS_URL } from './StoreItemData';
 import useAxios from "axios-hooks";
 import StoreItemGallery from './StoreItemGallery';
